@@ -39,3 +39,8 @@ jobs:
 
       - name: Verify end-to-end API flow
         run: npx tsx scripts/verify-flow.ts
+
+      - name: Smoke test the running server
+        run: node scripts/smoke-test.mjs
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
