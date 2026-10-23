@@ -25,6 +25,7 @@ import { StatCards } from "@/components/dashboard/stat-cards";
 import { ChatPanel } from "@/components/assistant/chat-panel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stagger, StaggerItem } from "@/components/motion";
+import { greeting } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Home" };
 export const dynamic = "force-dynamic";
@@ -71,7 +72,7 @@ export default async function DashboardPage() {
   return (
     <Stagger className="space-y-5">
       <StaggerItem>
-        <Hero name={name} />
+        <Hero name={name} initialGreeting={greeting()} />
       </StaggerItem>
 
       <StaggerItem>

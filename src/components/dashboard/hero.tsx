@@ -4,12 +4,19 @@ import { useEffect, useState } from "react";
 import { greeting } from "@/lib/utils";
 
 /**
- * Hero banner: "Good evening, Captain" over an ocean-sunset gradient. The
- * greeting is computed on the client so it always matches the visitor's clock.
+ * Hero banner: "Good evening, Captain" over an ocean-sunset gradient.
+ *
+ * The greeting is seeded from the server so the first paint is already correct
+ * (no "Welcome" → "Good evening" flash), then corrected on mount if the
+ * visitor's clock is in a different timezone from the server.
  */
-export function Hero({ name }: { name: string }) {
-  const [hello, setHello] = useState("Welcome");
-  useEffect(() => setHello(greeting()), []);
+export function Hero({ name, initialGreeting }: { name: string; initialGreeting?: string }) {
+  const [hello, setHello] = useState(initialGreeting ?? "Welcome");
+
+  useEffect(() => {
+    const local = greeting();
+    setHello((current) => (current === local ? current : local));
+  }, []);
 
   return (
     <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-ocean-sunset p-6 sm:p-8">

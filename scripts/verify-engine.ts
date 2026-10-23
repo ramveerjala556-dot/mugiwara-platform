@@ -6,6 +6,7 @@ import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { analyzePrompt } from "../src/lib/engine/spec";
 import { buildStaticSite } from "../src/lib/engine/templates";
+import { composePreview } from "../src/lib/engine/preview";
 import { buildPlan, acceptanceCriteria } from "../src/lib/agents/plan";
 
 const PROMPTS = [
@@ -34,8 +35,15 @@ for (const prompt of PROMPTS) {
   const css = byPath.get("styles.css") ?? "";
   const js = byPath.get("app.js") ?? "";
 
+  // The preview must be fully self-contained: styles and scripts inlined so it
+  // renders inside a sandboxed iframe with no network access.
+  const preview = composePreview(files);
+
   const checks: [string, boolean, string][] = [
     ["files present", files.length === 4, files.map((f) => f.path).join(", ")],
+    ["preview inlines css", preview.includes("<style>") && !preview.includes('href="styles.css"'), ""],
+    ["preview inlines js", /<script>\s/.test(preview) && !preview.includes('src="app.js"'), ""],
+    ["preview is self-contained", !/<link[^>]+href="[^"]+\.css"/.test(preview), ""],
     ["doctype", /^<!doctype html>/i.test(html.trim()), ""],
     ["links css", html.includes("styles.css"), ""],
     ["links js", html.includes("app.js"), ""],
