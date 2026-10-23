@@ -305,19 +305,33 @@ Prompt instructions are **not** security controls. These are:
 
 ## Testing
 
-Two harnesses verify the system without needing a server or any API key:
+Three harnesses verify the system — none need an API key, and only the last one
+needs a build:
 
 ```bash
-npx tsx scripts/verify-engine.ts   # 6 prompts → 13 assertions each on the output
-npx tsx scripts/verify-flow.ts     # the real route handlers, end to end
+npx tsx scripts/verify-engine.ts   # 6 prompts → 16 assertions each on the output
+npx tsx scripts/verify-flow.ts     # the real route handlers, in-process
+node scripts/smoke-test.mjs        # boots the production server, drives it over HTTP
 ```
+
+`verify-engine.ts` checks the generated site: file set, doctype, asset wiring,
+theme block, JavaScript parses, no external scripts, the plan and acceptance
+criteria, and that the **preview is fully self-contained** (styles and scripts
+inlined so it renders in a sandboxed iframe with no network).
 
 `verify-flow.ts` covers: health, project creation, file generation, verification
 checks, listing, detail loading, plan persistence, file editing, **path-traversal
 rejection**, a chat-driven change request, building from chat, and Memory Vault
 creation plus **secret rejection**.
 
-Both exit non-zero on failure, so they work as CI gates.
+`smoke-test.mjs` starts the real server and asserts over HTTP: every page
+returns 200, the dashboard greets you and shows the Demo Mode banner, a prompt
+builds a project end to end, a chat follow-up re-themes it, and the safety gates
+hold — **traversal rejected, deployment refused without approval, execution
+reported as unconfigured, secrets refused**. 38 assertions.
+
+All three exit non-zero on failure, so they work as CI gates. `npm test` runs
+the lot.
 
 ---
 
@@ -371,8 +385,10 @@ Being straight about what is not finished:
 | `npm start` | Serve the production build |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript, no emit |
-| `npx tsx scripts/verify-engine.ts` | Generation checks |
-| `npx tsx scripts/verify-flow.ts` | End-to-end API checks |
+| `npm test` | All three verification suites |
+| `npx tsx scripts/verify-engine.ts` | Generation checks (6 prompts × 16 assertions) |
+| `npx tsx scripts/verify-flow.ts` | End-to-end API checks, in-process |
+| `node scripts/smoke-test.mjs` | Live server smoke test over HTTP |
 
 ---
 
