@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "verify:engine": "tsx scripts/verify-engine.ts",
     "verify:flow": "tsx scripts/verify-flow.ts",
+    "verify:smoke": "node scripts/smoke-test.mjs",
     "verify": "npm run verify:engine && npm run verify:flow",
+    "test": "npm run verify && npm run verify:smoke",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset"
   },
