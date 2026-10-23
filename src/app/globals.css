@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* MUGIWARA dark theme — the only theme shipped today. */
+    --background: 219 63% 6%;
+    --foreground: 40 45% 92%;
+    --card: 219 55% 11%;
+    --card-foreground: 40 45% 92%;
+    --primary: 43 90% 55%;
+    --primary-foreground: 219 63% 6%;
+    --secondary: 219 40% 18%;
+    --secondary-foreground: 40 45% 92%;
+    --muted: 219 35% 16%;
+    --muted-foreground: 40 20% 65%;
+    --accent: 43 90% 55%;
+    --accent-foreground: 219 63% 6%;
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 219 30% 22%;
+    --input: 219 30% 22%;
+    --ring: 43 90% 55%;
+    --radius: 0.85rem;
+
+    /* Font stacks — declared here so the build never depends on a font CDN. */
+    --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-midnight-950 text-foreground antialiased;
+    font-family: var(--font-sans);
+    background-image:
+      radial-gradient(1000px 500px at 100% 0%, rgba(242, 189, 46, 0.06), transparent 55%),
+      radial-gradient(900px 500px at 0% 100%, rgba(42, 149, 212, 0.08), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+  }
+
+  ::selection {
+    background: rgba(242, 189, 46, 0.3);
+  }
+
+  /* Focus visibility for keyboard users across the app. */
+  :focus-visible {
+    outline: 2px solid rgba(242, 189, 46, 0.6);
+    outline-offset: 2px;
+  }
+
+  /* Slim scrollbars that suit the dark sea theme. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
